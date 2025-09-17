@@ -47,7 +47,7 @@ import { nsfwMode } from '~/mode'
 
 const searchQuery = ref('')
 const router = useRouter()
-
+const route = useRoute()
 const goHome = () => {
   router.push({
     path: '/',
@@ -64,4 +64,14 @@ const doSearch = () => {
     }
   })
 }
+
+watch(nsfwMode, (newMode) => {
+  router.push({
+    path: route.path, // stay on current page
+    query: { 
+      ...route.query,
+      nsfwMode: newMode.value.toString()
+    }
+  })
+})
 </script>

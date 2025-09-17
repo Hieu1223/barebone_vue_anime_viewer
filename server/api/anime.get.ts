@@ -2,6 +2,7 @@ import { supabase } from "../utils/supabase"
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
+  console.log(query)
   const page = parseInt(query.page as string) || 1
   const mode = query.nsfwMode as string | undefined
   const pageSize = parseInt(query.pageSize as string) || 20
