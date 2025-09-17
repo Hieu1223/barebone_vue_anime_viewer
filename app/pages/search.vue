@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-4xl mx-auto p-4 space-y-4">
-    <h1 class="text-2xl font-bold">Search Results for "{{ query }}"</h1>
+    <h1 class="text-2xl font-bold">Search Results for "{{ title }}"</h1>
 
     <ClientOnly>
     <div v-if="results?.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -21,13 +21,35 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { nsfwMode } from '~/mode'
 import type { Anime } from '~/models/anime'
 
 const route = useRoute()
-const query = route.query.title as string || ''
 
-// Directly fetch search results via useFetch
-const { data } = await useFetch<Anime[]>(`/api/search?title=${encodeURIComponent(query)}`)
-const results = data.value || []
+const title = ref(route.query.title as string || '')
+const results = ref<Anime[]>([])
+
+async function fetchResults() {
+  if (!title.value) {
+    results.value = []
+    return
+  }
+  results.value = await $fetch<Anime[]>(
+    `/api/search?title=${encodeURIComponent(title.value)}&nsfwMode=${nsfwMode.value}`
+  )
+}
+
+// initial fetch
+await fetchResults()
+
+// refetch whenever title or nsfwMode changes
+watch(
+  () => [route.query.title, nsfwMode.value],
+  ([newTitle]) => {
+    title.value = newTitle as string || ''
+    fetchResults()
+  }
+)
 </script>
