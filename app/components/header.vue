@@ -63,6 +63,5 @@ const doSearch = () => {
       nsfwMode: nsfwMode.value.toString(),
     }
   })
-  router.go(0)
 }
 </script>

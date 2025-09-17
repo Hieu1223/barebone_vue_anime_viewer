@@ -46,7 +46,7 @@ await fetchResults()
 
 // refetch whenever title or nsfwMode changes
 watch(
-  () => [route.query.title, nsfwMode.value],
+  () => [route.query.title, route.query.nsfwMode],
   ([newTitle]) => {
     title.value = newTitle as string || ''
     fetchResults()
